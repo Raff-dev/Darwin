@@ -6,12 +6,29 @@ authors = ["Rafał Łazicki <rafal.lazicki99@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.12"
 fastapi = "^0.108.0"
 gunicorn = "^21.2.0"
-uvicorn = "^0.25.0"
+pre-commit = "^3.6.0"
+requests = "^2.31.0"
+python-dotenv = "^1.0.0"
 
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.8.0"
+pylint = "^3.0.3"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+
+[tool.pylint.messages_control]
+good-names = ["i", "j", "k", "_", "id", "up"]
+disable = [
+    "consider-using-generator",
+    "fixme",
+    "missing-docstring",
+    "missing-function-docstring",
+    "too-few-public-methods",
+]
