@@ -4,7 +4,7 @@ services:
     container_name: darwin-web
     build:
       context: .
-      dockerfile: darwin/Dockerfile
+      dockerfile: Dockerfile
     ports:
       - ${PORT}:${PORT}
     volumes:
