@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  web:
+    container_name: darwin-web
+    build:
+      context: darwin
+      dockerfile: Dockerfile
+    ports:
+      - ${PORT}:${PORT}
+    volumes:
+      - ./darwin:/darwin
+    env_file:
+      - .env
