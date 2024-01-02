@@ -3,9 +3,9 @@ FROM python:3.10-slim-buster
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-WORKDIR /darwin
-
 ADD ./darwin /darwin
+
+WORKDIR /darwin
 
 RUN pip install --upgrade pip && \
     pip install poetry && \
