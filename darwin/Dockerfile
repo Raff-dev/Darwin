@@ -5,7 +5,7 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /darwin
 
-ADD . /darwin
+ADD ./darwin /darwin
 
 RUN pip install --upgrade pip && \
     pip install poetry && \

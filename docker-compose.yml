@@ -3,8 +3,8 @@ services:
   web:
     container_name: darwin-web
     build:
-      context: darwin
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: darwin/Dockerfile
     ports:
       - ${PORT}:${PORT}
     volumes:
