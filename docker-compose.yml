@@ -2,7 +2,7 @@ version: "3.8"
 services:
   web:
     container_name: darwin-web
-    command: python3 chat.py
+    command: python3 facts.py
     build:
       context: .
       dockerfile: Dockerfile

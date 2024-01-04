@@ -5,8 +5,6 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /darwin
 
-ADD ./darwin /darwin
-
 RUN pip install --upgrade pip && \
     pip install poetry && \
     poetry config virtualenvs.create false --local
@@ -14,6 +12,8 @@ RUN pip install --upgrade pip && \
 COPY ./pyproject.toml ./poetry.lock* /darwin/
 
 RUN poetry install --without dev
+
+ADD ./darwin /darwin
 
 EXPOSE $PORT
 
