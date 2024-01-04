@@ -162,4 +162,4 @@ cython_debug/
 media/*
 !media/.gitkeep
 
-**/embeddings/*
+**/embeddings
