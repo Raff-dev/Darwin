@@ -163,3 +163,6 @@ media/*
 !media/.gitkeep
 
 **/embeddings
+
+*.sqlite
+*.sqlite3
