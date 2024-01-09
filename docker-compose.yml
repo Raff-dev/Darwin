@@ -3,6 +3,7 @@ services:
   web:
     container_name: darwin-web
     command: python3 facts.py
+    working_dir: /
     build:
       context: .
       dockerfile: Dockerfile

@@ -4,7 +4,7 @@ from sqlite3 import OperationalError
 from langchain.tools import Tool
 from pydantic.v1 import BaseModel  # type: ignore
 
-conn = sqlite3.connect("course/agents/db.sqlite")
+conn = sqlite3.connect("/darwin/course/agents/db.sqlite")
 
 
 def list_tables() -> str | OperationalError:

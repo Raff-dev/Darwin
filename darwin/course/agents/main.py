@@ -1,8 +1,6 @@
 import os
 import sys
 
-from agents.tools.report import write_report_tool
-from agents.tools.sql import describe_table_tool, list_tables, run_query_tool
 from langchain.agents import AgentExecutor, OpenAIFunctionsAgent
 from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
@@ -13,13 +11,23 @@ from langchain.prompts import (
 )
 from langchain.schema import SystemMessage
 
+from darwin.course.agents.handlers.chat_model_start_handler import ChatModelStartHandler
+from darwin.course.agents.tools.report import write_report_tool
+from darwin.course.agents.tools.sql import (
+    describe_table_tool,
+    list_tables,
+    run_query_tool,
+)
+
 __import__("pysqlite3")
 sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-
-chat = ChatOpenAI(openai_api_key=OPENAI_API_KEY, model="gpt-4-1106-preview")  # type: ignore
+handler = ChatModelStartHandler()
+chat = ChatOpenAI(
+    api_key=OPENAI_API_KEY, callbacks=[handler], model="gpt-4-1106-preview"
+)
 
 tables = list_tables()
 prompt = ChatPromptTemplate(
@@ -54,4 +62,4 @@ agent_executor = AgentExecutor(agent=agent, verbose=True, tools=tools, memory=me
 
 
 agent_executor("How many orders are there? Write the result to a report")
-agent_executor("Repeatt the exact same process for users")
+agent_executor("Repeat the exact same process for users")
