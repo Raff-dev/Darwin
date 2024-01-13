@@ -1,15 +1,29 @@
 version: "3.8"
 services:
-  web:
-    container_name: darwin-web
+  backend:
+    container_name: darwin-backend
     command: python3 facts.py
     working_dir: /
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
     ports:
       - ${PORT}:${PORT}
     volumes:
-      - ./darwin:/darwin
+      - ./backend/darwin:/darwin
+    env_file:
+      - .env
+
+  frontend:
+    container_name: darwin-frontend
+    command: npm start
+    working_dir: /darwin
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend:/darwin
     env_file:
       - .env
