@@ -17,4 +17,4 @@ ADD ./darwin /darwin
 
 EXPOSE $PORT
 
-CMD uvicorn app:app --host 0.0.0.0 --port $PORT --reload
+CMD uvicorn app:app --host 0.0.0.0 --port $PORT

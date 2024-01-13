@@ -1,29 +1,32 @@
 version: "3.8"
+
+volumes:
+  node_modules: {}
+
 services:
   backend:
     container_name: darwin-backend
-    command: python3 facts.py
+    command: uvicorn darwin.app:app --host 0.0.0.0 --port 8000 --reload
     working_dir: /
     build:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - ${PORT}:${PORT}
+      - 8000:8000
     volumes:
       - ./backend/darwin:/darwin
-    env_file:
-      - .env
+    env_file: ./backend/.env
 
   frontend:
     container_name: darwin-frontend
-    command: npm start
+    command: npm run dev
     working_dir: /darwin
     build:
       context: ./frontend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.local
     ports:
       - 3000:3000
     volumes:
       - ./frontend:/darwin
-    env_file:
-      - .env
+      - node_modules:/darwin/node_modules
+    env_file: ./frontend/.env

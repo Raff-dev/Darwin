@@ -8,10 +8,11 @@ from starlette.templating import Jinja2Templates
 BASE_DIR = Path(__file__).resolve().parent
 MEDIA_ROOT = BASE_DIR / "media"
 STATIC_ROOT = BASE_DIR / "static"
+TEMPLATES_ROOT = BASE_DIR / "templates"
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory=STATIC_ROOT), name=str(STATIC_ROOT))
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory=TEMPLATES_ROOT)
 
 
 @app.get("/")

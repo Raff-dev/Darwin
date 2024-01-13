@@ -1,0 +1,15 @@
+FROM node:21-alpine
+
+WORKDIR /darwin
+
+RUN apk add --no-cache bash
+
+COPY package*.json  ./
+
+COPY package.json ./
+
+RUN npm install
+
+COPY . .
+
+CMD ["npm", "run", "dev"]
