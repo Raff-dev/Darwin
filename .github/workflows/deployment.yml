@@ -1,0 +1,34 @@
+name: Deploy Frontend to Heroku
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "frontend/**"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy Darwin Backend and Frontend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Deploy Backend
+        uses: gonuit/heroku-docker-deploy@v1.3.3
+        with:
+          email: ${{ secrets.HEROKU_EMAIL }}
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: "darwin"
+          dockerfile_directory: "backend"
+          dockerfile_name: "Dockerfile"
+
+      - name: Deploy Frontend
+        uses: gonuit/heroku-docker-deploy@v1.3.3
+        with:
+          email: ${{ secrets.HEROKU_EMAIL }}
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: "darwin-interface"
+          dockerfile_directory: "frontend"
+          dockerfile_name: "Dockerfile"
