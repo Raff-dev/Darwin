@@ -9,19 +9,40 @@ import {
     TableRow,
     Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { deleteDocument, getDocuments } from "./api/services";
 
 interface Document {
     id: number;
-    name: string;
+    filename: string;
 }
 
-interface DocumentsProps {
-    documents: Document[];
-}
+const Documents: React.FC = () => {
+    const [documents, setDocuments] = useState<Document[]>([]);
 
-const Documents: React.FC<DocumentsProps> = ({ documents }) => {
+    useEffect(() => {
+        fetchDocuments();
+    }, []);
+
+    const fetchDocuments = async () => {
+        try {
+            const data = await getDocuments();
+            setDocuments(data);
+        } catch (error) {
+            console.error("Error fetching documents:", error);
+        }
+    };
+
+    const handleDelete = async (id: number) => {
+        try {
+            deleteDocument(id);
+            setDocuments(documents.filter((document) => document.id !== id));
+        } catch (error) {
+            console.error("Error deleting document:", error);
+        }
+    };
+
     return (
         <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -46,12 +67,12 @@ const Documents: React.FC<DocumentsProps> = ({ documents }) => {
                     {documents.map((document) => (
                         <TableRow key={document.id}>
                             <TableCell>{document.id}</TableCell>
-                            <TableCell>{document.name}</TableCell>
+                            <TableCell>{document.filename}</TableCell>
                             <TableCell sx={{ textAlign: "right" }}>
                                 <Button variant="contained" color="primary" sx={{ marginRight: 1 }}>
                                     Chat
                                 </Button>
-                                <Button variant="contained" color="secondary">
+                                <Button variant="contained" color="secondary" onClick={() => handleDelete(document.id)}>
                                     Delete
                                 </Button>
                             </TableCell>
