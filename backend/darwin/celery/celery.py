@@ -4,4 +4,7 @@ from celery import Celery
 
 broker_url = os.getenv("REDIS_URL")
 
-celery_app = Celery("darwin", broker=broker_url)
+app = Celery("darwin", broker=broker_url)
+app.autodiscover_tasks()
+
+from darwin.celery.tasks import *  # pylint: disable=all
