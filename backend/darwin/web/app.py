@@ -1,8 +1,10 @@
+import os
 import uuid
 from pathlib import Path
 
 from fastapi import APIRouter, FastAPI, File, Request, UploadFile
-from starlette.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+from starlette.responses import JSONResponse, RedirectResponse
 from starlette.routing import Route
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
@@ -13,10 +15,25 @@ STATIC_ROOT = BASE_DIR / "static"
 TEMPLATES_ROOT = BASE_DIR / "templates"
 
 app = FastAPI()
+allowed_origins = os.getenv("ALLOWED_ORIGINS", "").split(",")
+
+print(allowed_origins)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allowed_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.mount("/static", StaticFiles(directory=STATIC_ROOT), name=str(STATIC_ROOT))
 templates = Jinja2Templates(directory=TEMPLATES_ROOT)
 
 router = APIRouter()
+
+
+@app.get("/")
+def redirect_to_api(_: Request):
+    return RedirectResponse(url="/api")
 
 
 @router.get("/")
@@ -24,7 +41,7 @@ def root(_: Request):
     return [route.path for route in app.router.routes if isinstance(route, Route)]
 
 
-@router.post("/upload-pdf/")
+@router.post("/documents")
 async def upload_pdf(file: UploadFile = File(...)):
     if file.content_type != "application/pdf":
         return JSONResponse(
