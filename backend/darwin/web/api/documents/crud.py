@@ -36,7 +36,7 @@ async def create_document(
     db.commit()
     db.refresh(db_document)
 
-    create_embeddings_task.delay(filepath)
+    create_embeddings_task.delay(db_document.id, filepath)
     return db_document
 
 
@@ -66,8 +66,11 @@ def delete_document(document_id: int, db: Session = Depends(get_db)) -> dict:
     if db_document is None:
         raise HTTPException(status_code=404, detail="Document not found")
 
-    filepath = db_document.filepath
-    os.remove(filepath)
+    try:
+        os.remove(db_document.filepath)
+    except OSError:
+        pass
+
     db.delete(db_document)
     db.commit()
     return {"detail": "Document deleted"}
