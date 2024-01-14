@@ -162,7 +162,5 @@ cython_debug/
 media/
 !media/.gitkeep
 
-**/embeddings
-
 *.sqlite
 *.sqlite3

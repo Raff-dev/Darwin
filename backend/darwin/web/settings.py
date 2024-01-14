@@ -6,4 +6,4 @@ MEDIA_ROOT = BASE_DIR / "media"
 STATIC_ROOT = BASE_DIR / "static"
 TEMPLATES_ROOT = BASE_DIR / "templates"
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv("DATABASE_URL", "")
