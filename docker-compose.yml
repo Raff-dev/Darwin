@@ -6,8 +6,9 @@ volumes:
 services:
   backend:
     container_name: darwin-backend
-    command: uvicorn darwin.app:app --host 0.0.0.0 --port 8000 --reload
-    working_dir: /
+    restart: always
+    command: uvicorn app:app --host 0.0.0.0 --port 8000 --reload
+    working_dir: /darwin
     build:
       context: ./backend
       dockerfile: Dockerfile
