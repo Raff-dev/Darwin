@@ -1,6 +1,8 @@
 from langchain.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
+from darwin.chat.vector_stores.pinecone import vector_store
+
 
 def create_embeddings_for_pdf(file_path: str):
     splitter = RecursiveCharacterTextSplitter(
@@ -9,4 +11,4 @@ def create_embeddings_for_pdf(file_path: str):
     )
     loader = PyPDFLoader(file_path)
     documents = loader.load_and_split(splitter)
-    print(documents)
+    vector_store.add_documents(documents)

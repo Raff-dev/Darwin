@@ -6,8 +6,9 @@ from starlette.responses import RedirectResponse
 from starlette.routing import Route
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
-from web.api.documents.crud import router as documents_router
-from web.settings import STATIC_ROOT, TEMPLATES_ROOT
+
+from darwin.web.api.documents.crud import router as documents_router
+from darwin.web.settings import STATIC_ROOT, TEMPLATES_ROOT
 
 app = FastAPI()
 allowed_origins = os.getenv("ALLOWED_ORIGINS", "").split(",")

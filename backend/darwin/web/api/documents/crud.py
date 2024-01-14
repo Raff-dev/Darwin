@@ -1,11 +1,14 @@
+import os
 import uuid
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse
-from web.api.documents import models, schemas
-from web.database import engine, get_db
-from web.settings import MEDIA_ROOT
+
+from darwin.celery.tasks import create_embeddings_task
+from darwin.web.api.documents import models, schemas
+from darwin.web.database import engine, get_db
+from darwin.web.settings import MEDIA_ROOT
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -17,8 +20,7 @@ async def create_document(
     filename: str = Form(...),
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
-) -> models.Document:
-    print("Heljo")
+) -> models.Document | JSONResponse:
     if file.content_type != "application/pdf":
         return JSONResponse(
             status_code=400, content={"error": "Only PDF files are allowed."}
@@ -33,6 +35,8 @@ async def create_document(
     db.add(db_document)
     db.commit()
     db.refresh(db_document)
+
+    create_embeddings_task.delay(filepath)
     return db_document
 
 
@@ -61,6 +65,9 @@ def delete_document(document_id: int, db: Session = Depends(get_db)) -> dict:
     )
     if db_document is None:
         raise HTTPException(status_code=404, detail="Document not found")
+
+    filepath = db_document.filepath
+    os.remove(filepath)
     db.delete(db_document)
     db.commit()
     return {"detail": "Document deleted"}
