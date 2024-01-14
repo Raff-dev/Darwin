@@ -6,9 +6,9 @@ on:
       - main
 
 jobs:
-  deploy:
+  deploy-backend:
     runs-on: ubuntu-latest
-    name: Deploy Darwin Backend and Frontend
+    name: Deploy Backend
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -21,6 +21,13 @@ jobs:
           heroku_app_name: "darwin"
           dockerfile_directory: "backend"
           dockerfile_name: "Dockerfile"
+
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    name: Deploy Frontend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
       - name: Deploy Frontend
         uses: gonuit/heroku-docker-deploy@v1.3.3
