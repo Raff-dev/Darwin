@@ -7,7 +7,7 @@ services:
   backend:
     container_name: darwin-backend
     restart: always
-    command: uvicorn app:app --host 0.0.0.0 --port 8000 --reload
+    command: uvicorn web.app:app --host 0.0.0.0 --port 8000 --reload
     working_dir: /darwin
     build:
       context: ./backend

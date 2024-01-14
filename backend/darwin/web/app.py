@@ -1,3 +1,4 @@
+import uuid
 from pathlib import Path
 
 from fastapi import APIRouter, FastAPI, File, Request, UploadFile
@@ -30,10 +31,11 @@ async def upload_pdf(file: UploadFile = File(...)):
             status_code=400, content={"error": "Only PDF files are allowed."}
         )
 
-    with open(f"{MEDIA_ROOT}/{file.filename}", "wb") as buffer:
+    filename = uuid.uuid4()
+    with open(f"{MEDIA_ROOT}/{filename}", "wb") as buffer:
         buffer.write(await file.read())
 
-    return {"filename": file.filename}
+    return {"filename": filename}
 
 
 @router.get("/hello")
