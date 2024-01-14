@@ -4,6 +4,7 @@ volumes:
   node_modules: {}
   database: {}
   redis: {}
+  uploads: {}
 
 x-darwin: &darwin
   build:
@@ -11,6 +12,7 @@ x-darwin: &darwin
     dockerfile: Dockerfile
   volumes:
     - ./backend/darwin:/app/darwin
+    - uploads:/app/darwin/media
   env_file: ./backend/.env
   working_dir: /app
 
@@ -63,6 +65,6 @@ services:
 
   worker:
     <<: *darwin
-    command: celery -A darwin.celery.celery.celery_app worker --loglevel=info
+    command: celery -A darwin.celery.celery worker --loglevel=info
     depends_on:
       - redis

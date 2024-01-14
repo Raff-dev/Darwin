@@ -1,7 +1,8 @@
-from darwin.celery.celery import celery_app
+from celery import shared_task
+
 from darwin.chat.create_embeddings import create_embeddings_for_pdf
 
 
-@celery_app.task
+@shared_task
 def create_embeddings_task(filepath):
     create_embeddings_for_pdf(filepath)
