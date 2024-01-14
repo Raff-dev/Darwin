@@ -2,6 +2,7 @@ version: "3.8"
 
 volumes:
   node_modules: {}
+  database: {}
 
 services:
   backend:
@@ -31,3 +32,17 @@ services:
       - ./frontend:/darwin
       - node_modules:/darwin/node_modules
     env_file: ./frontend/.env
+
+  database:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    ports:
+      - 5432:5432
+    volumes:
+      - database:/var/lib/postgresql/data
+
+  # Other services...
