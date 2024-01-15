@@ -12,7 +12,6 @@ function App() {
         <Toolbar>
           <Button color="inherit" href="/">Home</Button>
           <Typography sx={{ flexGrow: 1 }} />
-          <Button color="inherit" href="/chat">Chat</Button>
           <Button color="inherit" href="/about">About</Button>
           <Button color="inherit" href="/documents">Documents</Button>
         </Toolbar>
@@ -20,9 +19,9 @@ function App() {
         <Box sx={{ marginTop: '20px' }}>
           <Routes>
             <Route path="/" element={<Navigate to="/documents" />} />
-            <Route path="/chat" element={<Chat />} />
             <Route path="/documents" element={<Documents />} />
             <Route path="/documents/new" element={<NewDocument />} />
+            <Route path="/documents/:document_id/chat" element={<Chat />} />
           </Routes>
         </Box>
       </Container>
