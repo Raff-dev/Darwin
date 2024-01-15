@@ -1,6 +1,5 @@
-from pydantic import BaseModel
-
 from darwin.web.api.conversations.models import MessageType
+from pydantic import BaseModel
 
 
 class MessageBase(BaseModel):
@@ -31,6 +30,7 @@ class ConversationCreate(ConversationBase):
 class Conversation(ConversationBase):
     id: int
     messages: list[Message] = []
+    document_id: int
 
     class Config:
         from_attributes = True

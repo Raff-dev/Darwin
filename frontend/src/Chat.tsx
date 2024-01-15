@@ -1,7 +1,7 @@
 import { Button, Grid, MenuItem, Select, SelectChangeEvent, TextField, Typography } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
-import { Conversation, Message, MessageType, createConversation, createMessage, getConversations, getMessages } from './api/conversations';
-import { Document, getDocument } from './api/documents';
+import { Conversation, Message, MessageType, createMessage, getMessages } from './api/conversations';
+import { Document, createConversation, getConversations, getDocument } from './api/documents';
 
 import { useParams } from 'react-router-dom';
 
@@ -25,18 +25,23 @@ function Chat() {
 
     useEffect(() => {
         async function fetchConversations() {
-            const conversations = await getConversations();
+            if (!document) {
+                return;
+            }
+            const conversations = await getConversations(document);
             setConversations(conversations);
             if (conversations.length > 0) {
                 setSelectedConversation(conversations[0]);
+            } else {
+                handleCreateConversation();
             }
         }
         fetchConversations();
-    }, []);
+    }, [document]);
 
     useEffect(() => {
         async function fetchMessages() {
-            if (selectedConversation) {
+            if (selectedConversation && selectedConversation.id) {
                 const messages = await getMessages(selectedConversation.id);
                 setMessages(messages);
             }
@@ -60,7 +65,7 @@ function Chat() {
 
     const handleNewMessageSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        if (selectedConversation && newMessage.trim() !== '') {
+        if (selectedConversation && selectedConversation.id && newMessage.trim() !== '') {
             const message = await createMessage({ text: newMessage, type: MessageType.USER }, selectedConversation.id);
             setMessages([...messages, message]);
             setNewMessage('');
@@ -68,7 +73,11 @@ function Chat() {
     };
 
     const handleCreateConversation = async () => {
-        const newConversation = await createConversation({});
+        if (!document) {
+            return;
+        }
+
+        const newConversation = await createConversation(document, {});
         setSelectedConversation(newConversation);
         setConversations([...conversations, newConversation]);
     };
@@ -99,7 +108,7 @@ function Chat() {
             </Grid>
             <Grid item xs="auto" sx={{ outline: '1px solid #3333', height: "70vh", overflow: 'auto', padding: '20px 20px', margin: '10px 0' }} ref={messagesContainerRef}>
                 <Grid container spacing={1} direction="column">
-                    {messages.map((m, i) => (
+                    {messages && messages.map((m, i) => (
                         <Grid container direction="column" key={i} sx={{padding: "5px"}}>
                             <Typography  sx={{ fontWeight: 'bold', fontVariant:"small-caps" }}>{m.type}</Typography>
                             <Typography>{m.text}</Typography>
