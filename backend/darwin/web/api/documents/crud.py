@@ -2,12 +2,12 @@ import os
 import uuid
 
 from darwin.celery.tasks import process_document
+from darwin.settings import MEDIA_ROOT
 from darwin.web.api.conversations import schemas as conversations_schemas
 from darwin.web.api.conversations.models import Conversation
 from darwin.web.api.documents import schemas as documents_schemas
 from darwin.web.api.documents.models import Document
 from darwin.web.database import get_db
-from darwin.web.settings import MEDIA_ROOT
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse

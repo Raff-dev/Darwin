@@ -1,12 +1,11 @@
+from darwin.chat.vector_stores.pinecone import vector_store
 from langchain.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-
-from darwin.chat.vector_stores.pinecone import vector_store
 
 
 def process_document(document_id: int, file_path: str):
     splitter = RecursiveCharacterTextSplitter(
-        chunk_size=1000,
+        chunk_size=500,
         chunk_overlap=100,
     )
     loader = PyPDFLoader(file_path)
@@ -15,7 +14,7 @@ def process_document(document_id: int, file_path: str):
     for document in documents:
         document.metadata = {
             "page": document.metadata["page"],
-            "text": document.metadata["text"],
+            "text": document.page_content,
             "document_id": document_id,
         }
 

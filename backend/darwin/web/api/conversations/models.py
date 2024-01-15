@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Any
 
 from darwin.web.api.documents.models import Document
 from darwin.web.database import Base
@@ -33,7 +34,7 @@ class Message(Base):
 
     id = Column(Integer, primary_key=True)
     text = Column(String)
-    type: Column = Column(SqlEnum(MessageType))
+    type: Any = Column(SqlEnum(MessageType))
     conversation_id = Column(Integer, ForeignKey("conversations.id"))
     conversation = relationship(Conversation, back_populates="messages")
 

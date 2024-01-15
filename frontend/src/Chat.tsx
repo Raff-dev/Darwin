@@ -1,7 +1,7 @@
 import { Button, Grid, MenuItem, Select, SelectChangeEvent, TextField, Typography } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
-import { Conversation, Message, MessageType, createMessage, getMessages } from './api/conversations';
-import { Document, createConversation, getConversations, getDocument } from './api/documents';
+import { Conversation, Message, MessageCreate, MessageType, createMessage, getMessages } from './api/conversations';
+import { Document, DocumentStatus, createConversation, getConversations, getDocument } from './api/documents';
 
 import { useParams } from 'react-router-dom';
 
@@ -10,7 +10,7 @@ function Chat() {
     const { document_id } = useParams<{ document_id: string }>();
     const [conversations, setConversations] = useState<Conversation[]>([]);
     const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
-    const [messages, setMessages] = useState<Message[]>([]);
+    const [messages, setMessages] = useState<(Message | MessageCreate)[]>([]);
     const [newMessage, setNewMessage] = useState('');
     const [document, setDocument] = useState<Document | null>(null);
     const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -66,9 +66,11 @@ function Chat() {
     const handleNewMessageSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         if (selectedConversation && selectedConversation.id && newMessage.trim() !== '') {
-            const message = await createMessage({ text: newMessage, type: MessageType.USER }, selectedConversation.id);
-            setMessages([...messages, message]);
+            const userMessage = { text: newMessage, type: MessageType.USER}
+            setMessages(messages => [...messages, userMessage]);
             setNewMessage('');
+            const aiMessage = await createMessage(userMessage, selectedConversation.id);
+            setMessages(messages => [...messages, aiMessage]);
         }
     };
 
@@ -120,7 +122,8 @@ function Chat() {
                 <form onSubmit={handleNewMessageSubmit} >
                     <Grid container alignItems="center" mt={2}>
                         <Grid item sx={{ flexGrow: 1 }}>
-                            <TextField fullWidth value={newMessage} onChange={handleNewMessageChange}  />
+                            <TextField fullWidth value={newMessage} onChange={handleNewMessageChange} disabled={document?.status !== DocumentStatus.PROCESSED}
+                                placeholder={document?.status !== DocumentStatus.PROCESSED ? 'Document is not processed yet' : ''} />
                         </Grid>
                         <Grid item>
                             <Button type="submit">Send</Button>

@@ -1,13 +1,13 @@
 import os
 
 from langchain.chains import LLMChain
-from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationSummaryMemory
 from langchain.prompts import (
     ChatPromptTemplate,
     HumanMessagePromptTemplate,
     MessagesPlaceholder,
 )
+from langchain_openai import ChatOpenAI
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 

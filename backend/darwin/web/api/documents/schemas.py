@@ -12,3 +12,4 @@ class DocumentCreate(DocumentBase):
 
 class Document(DocumentBase):
     id: int
+    status: str

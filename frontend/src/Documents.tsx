@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Document, deleteDocument, getDocuments } from "./api/documents";
+import { Document, DocumentStatus, deleteDocument, getDocuments } from "./api/documents";
 
 const Documents: React.FC = () => {
     const [documents, setDocuments] = useState<Document[]>([]);
@@ -43,7 +43,7 @@ const Documents: React.FC = () => {
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
                     <TableRow>
-                        <TableCell colSpan={3}>
+                        <TableCell colSpan={4}>
                             <div style={{ display: "flex", justifyContent: "space-between" }}>
                                 <Typography variant="h4">Your Documents</Typography>
                                 <Button variant="contained" color="primary" component={Link} to="/documents/new">
@@ -55,6 +55,7 @@ const Documents: React.FC = () => {
                     <TableRow>
                         <TableCell>ID</TableCell>
                         <TableCell>Name</TableCell>
+                        <TableCell>Status</TableCell>
                         <TableCell sx={{ textAlign: "right" }}>Actions</TableCell>
                     </TableRow>
                 </TableHead>
@@ -63,8 +64,16 @@ const Documents: React.FC = () => {
                         <TableRow key={document.id}>
                             <TableCell>{document.id}</TableCell>
                             <TableCell>{document.filename}</TableCell>
+                            <TableCell>{document.status}</TableCell>
                             <TableCell sx={{ textAlign: "right" }}>
-                                <Button variant="contained" color="primary" sx={{ marginRight: 1 }} component={Link} to={`/documents/${document.id}/chat`}>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    sx={{ marginRight: 1 }}
+                                    component={Link}
+                                    to={`/documents/${document.id}/chat`}
+                                    disabled={document.status !== DocumentStatus.PROCESSED}
+                                >
                                     Chat
                                 </Button>
                                 <Button variant="contained" color="secondary" onClick={() => handleDelete(document.id)}>

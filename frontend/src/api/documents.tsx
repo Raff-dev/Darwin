@@ -1,9 +1,16 @@
 import API_URLS from './config';
 import { Conversation, ConversationCreate } from './conversations';
 
+export enum DocumentStatus {
+  PENDING = 'pending',
+  PROCESSING = 'processing',
+  PROCESSED = 'processed',
+  ERROR = 'error',
+}
 export interface Document {
   id: number;
   filename: string;
+  status: DocumentStatus;
 }
 
 export const getDocument = async (id: number): Promise<Document> => {
