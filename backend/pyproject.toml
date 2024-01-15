@@ -57,6 +57,7 @@ ignore_missing_imports = true
 
 [tool.isort]
 profile = "black"
+src_paths = ["backend/darwin"]
 
 [tool.autoflake]
 remove_all_unused_imports = true
