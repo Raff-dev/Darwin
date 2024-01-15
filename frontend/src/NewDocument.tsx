@@ -1,6 +1,6 @@
 import { Box, Button, Container, Typography } from "@mui/material";
 import React, { ChangeEvent, useState } from "react";
-import { createDocument } from "./api/services";
+import { createDocument } from "./api/documents";
 
 const NewDocument: React.FC = () => {
     const [file, setFile] = useState<File | null>(null);

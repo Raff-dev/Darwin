@@ -31,9 +31,9 @@ class Message(Base):
     type: Column = Column(SqlEnum(MessageType))
     conversation_id = Column(Integer, ForeignKey("conversations.id"))
 
-    conversation = relationship("Conversation", back_populates="messages")
+    conversation = relationship(Conversation, back_populates="messages")
 
 
 Conversation.messages = relationship(
-    "Message", order_by=Message.id, back_populates="conversation"
+    Message, order_by=Message.id, back_populates="conversation"
 )

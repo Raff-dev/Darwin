@@ -16,6 +16,7 @@ langchain-openai = "^0.0.2.post1"
 pypdf = "^3.17.4"
 celery = "^5.3.6"
 redis = "^5.0.1"
+alembic = "^1.13.1"
 
 [tool.poetry.group.course.dependencies]
 pysqlite3-binary = "^0.5.2.post2"

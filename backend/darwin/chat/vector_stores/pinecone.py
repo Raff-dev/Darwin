@@ -1,6 +1,6 @@
 import os
 
-import pinecone
+import pinecone  # pylint: disable=import-error
 from langchain.vectorstores.pinecone import Pinecone
 
 from darwin.chat.embeddings.openai import embeddings

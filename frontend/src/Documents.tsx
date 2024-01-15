@@ -11,12 +11,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { deleteDocument, getDocuments } from "./api/services";
-
-interface Document {
-    id: number;
-    filename: string;
-}
+import { Document, deleteDocument, getDocuments } from "./api/documents";
 
 const Documents: React.FC = () => {
     const [documents, setDocuments] = useState<Document[]>([]);
