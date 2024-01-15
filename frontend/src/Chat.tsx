@@ -1,6 +1,6 @@
-import { Box, Button, Container, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
+import { Button, Grid, MenuItem, Select, SelectChangeEvent, TextField, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { Conversation, Message, MessageType, createMessage, getConversations, getMessages } from './api/conversations';
+import { Conversation, Message, MessageType, createConversation, createMessage, getConversations, getMessages } from './api/conversations';
 
 function Chat() {
     const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -39,29 +39,58 @@ function Chat() {
         setNewMessage(event.target.value);
     };
 
-
     const handleNewMessageSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         if (selectedConversation && newMessage.trim() !== '') {
-            const message = await createMessage({ text: newMessage, type: MessageType.User }, selectedConversation.id);
+            const message = await createMessage({ text: newMessage, type: MessageType.USER }, selectedConversation.id);
             setMessages([...messages, message]);
             setNewMessage('');
         }
     };
 
+    const handleCreateConversation = async () => {
+        const newConversation = await createConversation({});
+        setSelectedConversation(newConversation);
+        setConversations([...conversations, newConversation]);
+    };
+
     return (
-        <Container>
-            <Select value={selectedConversation?.id || ''} onChange={handleConversationChange}>
-                {conversations.map(c => <MenuItem key={c.id} value={c.id}>Conversation {c.id}</MenuItem>)}
-            </Select>
-            <Box sx={{ my: 2 }}>
-                {messages.map((m, i) => <p key={i}>{m.text}</p>)}
-            </Box>
-            <form onSubmit={handleNewMessageSubmit}>
-                <TextField fullWidth value={newMessage} onChange={handleNewMessageChange} />
-                <Button type="submit">Send</Button>
-            </form>
-        </Container>
+        <Grid container direction="column">
+            <Grid item xs>
+                <Grid container alignItems="center">
+                    <Grid item>
+                        <Select sx={{ minWidth: 200 }} value={selectedConversation?.id || ''} onChange={handleConversationChange}>
+                            {conversations.map(c => <MenuItem key={c.id} value={c.id}>Conversation {c.id}</MenuItem>)}
+                        </Select>
+                    </Grid>
+                    <Grid item sx={{ flexGrow: 1 }} />
+                    <Grid item>
+                        <Button variant="outlined" onClick={handleCreateConversation}>New</Button>
+                    </Grid>
+                </Grid>
+            </Grid>
+            <Grid item xs="auto" sx={{ outline: '1px solid #3333', height: "70vh", overflow: 'auto', padding: '0 20px', margin: '10px 0' }}>
+                <Grid container spacing={1} direction="column">
+                    {messages.map((m, i) => (
+                        <Grid item key={i}>
+                            <Typography>{m.text}</Typography>
+                        </Grid>
+                    ))}
+                </Grid>
+            </Grid>
+            <Grid item xs>
+                <form onSubmit={handleNewMessageSubmit} >
+                    <Grid container alignItems="center" mt={2}>
+                        <Grid item sx={{ flexGrow: 1 }}>
+                            <TextField fullWidth value={newMessage} onChange={handleNewMessageChange}  />
+                        </Grid>
+                        <Grid item>
+                            <Button type="submit">Send</Button>
+                        </Grid>
+                    </Grid>
+                </form>
+            </Grid>
+        </Grid>
     );
 }
 

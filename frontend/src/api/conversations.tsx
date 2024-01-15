@@ -5,6 +5,10 @@ export interface Conversation {
     messages: Message[];
 }
 
+export interface ConversationCreate {
+}
+
+
 export interface MessageCreate {
     text: string;
     type: MessageType;
@@ -35,7 +39,7 @@ async function getConversation(conversationId: number): Promise<Conversation> {
     return response.json();
 }
 
-async function createConversation(conversation: Conversation): Promise<Conversation> {
+async function createConversation(conversation: ConversationCreate): Promise<Conversation> {
     const response = await fetch(`${API_URLS.CONVERSATIONS}`, {
         method: 'POST',
         headers: {
