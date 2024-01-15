@@ -1,8 +1,8 @@
 from celery import shared_task
 
-from darwin.chat.create_embeddings import create_embeddings_for_pdf
+from darwin.chat import create_embeddings
 
 
 @shared_task
-def create_embeddings_task(document_id: int, filepath: str):
-    create_embeddings_for_pdf(document_id, filepath)
+def process_document(document_id: int, filepath: str):
+    create_embeddings.process_document(document_id, filepath)

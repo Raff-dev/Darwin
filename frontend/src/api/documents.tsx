@@ -1,6 +1,11 @@
 import API_URLS from './config';
 
-export const getDocument = async (id: number) => {
+export interface Document {
+  id: number;
+  filename: string;
+}
+
+export const getDocument = async (id: number): Promise<Document> => {
   const response = await fetch(`${API_URLS.DOCUMENTS}/${id}`);
   if (!response.ok) {
       throw new Error(`Failed to fetch document: ${response.statusText}`);
@@ -8,7 +13,7 @@ export const getDocument = async (id: number) => {
   return response.json();
 };
 
-export const getDocuments = async () => {
+export const getDocuments = async (): Promise<Document[]> => {
   const response = await fetch(API_URLS.DOCUMENTS);
   if (!response.ok) {
     throw new Error(`Failed to fetch documents: ${response.statusText}`);
@@ -16,7 +21,7 @@ export const getDocuments = async () => {
   return response.json();
 };
 
-export const createDocument = async (file: File) => {
+export const createDocument = async (file: File): Promise<Document> => {
   const formData = new FormData();
   formData.append('file', file);
   formData.append('filename', file.name);
@@ -31,7 +36,7 @@ export const createDocument = async (file: File) => {
   return response.json();
 };
 
-export const deleteDocument = async (id: number) => {
+export const deleteDocument = async (id: number): Promise<Document> => {
   const response = await fetch(`${API_URLS.DOCUMENTS}/${id}`, {
       method: 'DELETE',
   });

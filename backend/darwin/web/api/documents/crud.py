@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse
 
-from darwin.celery.tasks import create_embeddings_task
+from darwin.celery.tasks import process_document
 from darwin.web.api.documents import models, schemas
 from darwin.web.database import engine, get_db
 from darwin.web.settings import MEDIA_ROOT
@@ -36,7 +36,7 @@ async def create_document(
     db.commit()
     db.refresh(db_document)
 
-    create_embeddings_task.delay(db_document.id, filepath)
+    process_document.delay(db_document.id, filepath)
     return db_document
 
 
@@ -53,8 +53,6 @@ def read_document(document_id: int, db: Session = Depends(get_db)) -> models.Doc
 @router.get("/", response_model=list[schemas.Document])
 def read_documents(db: Session = Depends(get_db)) -> list[models.Document]:
     documents = db.query(models.Document).all()
-    if not documents:
-        raise HTTPException(status_code=404, detail="Documents not found")
     return documents
 
 

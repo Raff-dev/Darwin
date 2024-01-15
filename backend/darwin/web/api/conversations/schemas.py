@@ -17,7 +17,7 @@ class Message(MessageBase):
     conversation_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class ConversationBase(BaseModel):
@@ -33,4 +33,4 @@ class Conversation(ConversationBase):
     messages: list[Message] = []
 
     class Config:
-        orm_mode = True
+        from_attributes = True

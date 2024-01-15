@@ -1,12 +1,8 @@
 import { AppBar, Box, Button, Container, Toolbar, Typography } from '@mui/material';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import Chat from './Chat';
 import Documents from './Documents';
 import NewDocument from './NewDocument';
-
-const documents = [
-  { id: 1, name: 'Document 1' },
-  { id: 2, name: 'Document 2' },
-];
 
 function App() {
   return (
@@ -16,7 +12,7 @@ function App() {
         <Toolbar>
           <Button color="inherit" href="/">Home</Button>
           <Typography sx={{ flexGrow: 1 }} />
-          <Button color="inherit" href="/scores">Scores</Button>
+          <Button color="inherit" href="/chat">Chat</Button>
           <Button color="inherit" href="/about">About</Button>
           <Button color="inherit" href="/documents">Documents</Button>
         </Toolbar>
@@ -24,7 +20,8 @@ function App() {
         <Box sx={{ marginTop: '20px' }}>
           <Routes>
             <Route path="/" element={<Navigate to="/documents" />} />
-            <Route path="/documents" element={<Documents documents={documents} />} />
+            <Route path="/chat" element={<Chat />} />
+            <Route path="/documents" element={<Documents />} />
             <Route path="/documents/new" element={<NewDocument />} />
           </Routes>
         </Box>
