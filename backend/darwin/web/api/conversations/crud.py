@@ -1,6 +1,7 @@
+from darwin.chat import chat
 from darwin.web.api.conversations import models, schemas
 from darwin.web.database import get_db
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 router = APIRouter()
@@ -32,8 +33,24 @@ def get_messages(
 def create_conversation_message(
     message: schemas.MessageCreate, conversation_id: int, db: Session = Depends(get_db)
 ) -> models.Message:
+    conversation = (
+        db.query(models.Conversation)
+        .filter(models.Conversation.id == conversation_id)
+        .first()
+    )
+    if conversation is None:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+
     db_message = models.Message(**message.model_dump(), conversation_id=conversation_id)
     db.add(db_message)
     db.commit()
     db.refresh(db_message)
-    return db_message
+
+    response = chat.ask_document(conversation=conversation, message=db_message)
+    db_response = models.Message(
+        text=response, type=models.MessageType.AI, conversation_id=conversation_id
+    )
+    db.add(db_response)
+    db.commit()
+    db.refresh(db_response)
+    return db_response

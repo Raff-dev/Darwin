@@ -1,7 +1,7 @@
+from darwin.settings import ALLOWED_ORIGINS, STATIC_ROOT, TEMPLATES_ROOT
 from darwin.web.api.conversations.crud import router as conversations_router
 from darwin.web.api.documents.crud import router as documents_router
 from darwin.web.database import Base, engine
-from darwin.web.settings import ALLOWED_ORIGINS, STATIC_ROOT, TEMPLATES_ROOT
 from fastapi import APIRouter, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
