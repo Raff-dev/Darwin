@@ -69,10 +69,11 @@ function Chat() {
                     </Grid>
                 </Grid>
             </Grid>
-            <Grid item xs="auto" sx={{ outline: '1px solid #3333', height: "70vh", overflow: 'auto', padding: '0 20px', margin: '10px 0' }}>
+            <Grid item xs="auto" sx={{ outline: '1px solid #3333', height: "70vh", overflow: 'auto', padding: '20px 20px', margin: '10px 0' }}>
                 <Grid container spacing={1} direction="column">
                     {messages.map((m, i) => (
-                        <Grid item key={i}>
+                        <Grid container direction="column" key={i} sx={{padding: "5px"}}>
+                            <Typography  sx={{ fontWeight: 'bold', fontVariant:"small-caps" }}>{m.type}</Typography>
                             <Typography>{m.text}</Typography>
                         </Grid>
                     ))}
