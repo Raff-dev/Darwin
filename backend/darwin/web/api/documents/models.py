@@ -1,9 +1,6 @@
-from typing import Any
-
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
 
-Base: Any = declarative_base()
+from darwin.web.database import Base
 
 
 class Document(Base):
