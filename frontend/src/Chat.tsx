@@ -1,12 +1,27 @@
 import { Button, Grid, MenuItem, Select, SelectChangeEvent, TextField, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Conversation, Message, MessageType, createConversation, createMessage, getConversations, getMessages } from './api/conversations';
+import { Document, getDocument } from './api/documents';
+
+import { useParams } from 'react-router-dom';
+
 
 function Chat() {
+    const { document_id } = useParams<{ document_id: string }>();
     const [conversations, setConversations] = useState<Conversation[]>([]);
     const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
     const [messages, setMessages] = useState<Message[]>([]);
     const [newMessage, setNewMessage] = useState('');
+    const [document, setDocument] = useState<Document | null>(null);
+    const messagesContainerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        async function fetchDocument() {
+            const document = await getDocument(Number(document_id));
+            setDocument(document);
+        }
+        fetchDocument();
+    }, [document_id]);
 
     useEffect(() => {
         async function fetchConversations() {
@@ -28,6 +43,10 @@ function Chat() {
         }
         fetchMessages();
     }, [selectedConversation]);
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
 
     const handleConversationChange = (event: SelectChangeEvent<number>) => {
         const selectedId = Number(event.target.value);
@@ -54,14 +73,23 @@ function Chat() {
         setConversations([...conversations, newConversation]);
     };
 
+    const scrollToBottom = () => {
+        if (messagesContainerRef.current) {
+            messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+        }
+    };
+
     return (
         <Grid container direction="column">
             <Grid item xs>
-                <Grid container alignItems="center">
+                <Grid container alignItems="center" spacing={1}>
                     <Grid item>
                         <Select sx={{ minWidth: 200 }} value={selectedConversation?.id || ''} onChange={handleConversationChange}>
                             {conversations.map(c => <MenuItem key={c.id} value={c.id}>Conversation {c.id}</MenuItem>)}
                         </Select>
+                    </Grid>
+                    <Grid item >
+                        {document && <Typography sx={{ fontWeight: 'bold', fontVariant:"small-caps" }}>{document.filename}</Typography>}
                     </Grid>
                     <Grid item sx={{ flexGrow: 1 }} />
                     <Grid item>
@@ -69,7 +97,7 @@ function Chat() {
                     </Grid>
                 </Grid>
             </Grid>
-            <Grid item xs="auto" sx={{ outline: '1px solid #3333', height: "70vh", overflow: 'auto', padding: '20px 20px', margin: '10px 0' }}>
+            <Grid item xs="auto" sx={{ outline: '1px solid #3333', height: "70vh", overflow: 'auto', padding: '20px 20px', margin: '10px 0' }} ref={messagesContainerRef}>
                 <Grid container spacing={1} direction="column">
                     {messages.map((m, i) => (
                         <Grid container direction="column" key={i} sx={{padding: "5px"}}>

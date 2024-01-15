@@ -64,7 +64,7 @@ const Documents: React.FC = () => {
                             <TableCell>{document.id}</TableCell>
                             <TableCell>{document.filename}</TableCell>
                             <TableCell sx={{ textAlign: "right" }}>
-                                <Button variant="contained" color="primary" sx={{ marginRight: 1 }}>
+                                <Button variant="contained" color="primary" sx={{ marginRight: 1 }} component={Link} to={`/documents/${document.id}/chat`}>
                                     Chat
                                 </Button>
                                 <Button variant="contained" color="secondary" onClick={() => handleDelete(document.id)}>
