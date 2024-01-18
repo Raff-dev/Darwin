@@ -39,7 +39,7 @@ def ask_document(conversation: Conversation, text: str) -> Generator[str, None, 
         memory=memory,
         retriever=retriever,
         condense_question_llm=llm_35_turbo,
-        verbose=True,
+        # verbose=True,
     )
 
     for chunk in chain.stream({"question": text}):

@@ -6,6 +6,7 @@ import { Document, DocumentStatus, createConversation, getConversations, getDocu
 import { useParams } from 'react-router-dom';
 
 const CURRENT_AI_MESSAGE_ID = -1;
+const PLACEHOLDER_MESSAGE_ID = -2;
 
 function Chat() {
     const { document_id } = useParams<{ document_id: string }>();
@@ -68,8 +69,8 @@ function Chat() {
         setMessages(messages => [...messages, message]);
     };
 
-    const setAiStreamMessage = (text: string) => {
-        const aiMessage = {id: CURRENT_AI_MESSAGE_ID, text: text, type: MessageType.AI};
+    const setAiStreamMessage = (text: string, done:boolean=false) => {
+        const aiMessage = {id: done ? PLACEHOLDER_MESSAGE_ID: CURRENT_AI_MESSAGE_ID, text: text, type: MessageType.AI};
         setMessages(messages => {
             const newMessages = messages.filter(m => {
                 if (m.id === CURRENT_AI_MESSAGE_ID) {
@@ -85,7 +86,7 @@ function Chat() {
     const handleNewMessageSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         if (selectedConversation && selectedConversation.id && newMessage.trim() !== '') {
-            const userMessage = { id:0, text: newMessage, type: MessageType.USER}
+            const userMessage = { id:PLACEHOLDER_MESSAGE_ID, text: newMessage, type: MessageType.USER}
             addMessage(userMessage);
             setNewMessage('');
 

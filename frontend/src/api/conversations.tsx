@@ -65,12 +65,8 @@ async function createMessage(
         if (done) {
             break;
         }
-        const chunk = decoder.decode(value, { stream: true });
-        console.log("===chunk===");
-        console.log(chunk);
-        console.log("==========");
 
-        text += chunk;
+        text += decoder.decode(value);
         setAiStreamMessage(text);
     }
 }
