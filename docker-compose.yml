@@ -6,15 +6,18 @@ volumes:
   redis: {}
   uploads: {}
 
-x-darwin: &darwin
-  build:
-    context: ./backend
-    dockerfile: Dockerfile
+x-darwin-config: &darwin-config
   volumes:
     - ./backend/darwin:/app/darwin
     - uploads:/app/darwin/media
   env_file: ./backend/.env
   working_dir: /app
+
+x-darwin: &darwin
+  <<: *darwin-config
+  build:
+    context: ./backend
+    dockerfile: Dockerfile
 
 services:
   backend:
@@ -68,3 +71,11 @@ services:
     command: celery -A darwin.celery.celery worker --loglevel=info
     depends_on:
       - redis
+
+  flower:
+    <<: *darwin
+    command: celery -A darwin.celery.celery flower --loglevel=info
+    ports:
+      - "5555:5555"
+    depends_on:
+      - worker

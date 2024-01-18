@@ -17,6 +17,7 @@ pypdf = "^3.17.4"
 celery = "^5.3.6"
 redis = "^5.0.1"
 alembic = "^1.13.1"
+flower = "^2.0.1"
 
 [tool.poetry.group.course.dependencies]
 pysqlite3-binary = "^0.5.2.post2"
@@ -58,7 +59,7 @@ ignore_missing_imports = true
 
 [tool.isort]
 profile = "black"
-src_paths = ["backend/darwin"]
+src_paths = ["darwin"]
 
 [tool.autoflake]
 remove_all_unused_imports = true
