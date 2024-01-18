@@ -47,7 +47,6 @@ async def create_conversation_message(
             conversation=conversation,
             text=message.text,
         ):
-            print(token)
             yield token
 
     return StreamingResponse(stream_tokens(), media_type="text/event-stream")
