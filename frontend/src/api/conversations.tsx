@@ -18,14 +18,14 @@ export interface Message {
     id: number;
     text: string;
     type: MessageType;
-    conversation_id: number;
-    conversation: Conversation;
 }
+
 
 export enum MessageType {
     SYSTEM = "system",
-    USER = "user",
+    USER = "human",
     AI = "ai",
+    FUNCTION = "function",
 }
 
 async function getConversation(conversationId: number): Promise<Conversation> {
@@ -35,18 +35,44 @@ async function getConversation(conversationId: number): Promise<Conversation> {
 
 async function getMessages(conversationId: number): Promise<Message[]> {
     const response = await fetch(`${API_URLS.CONVERSATIONS}/${conversationId}/messages/`);
-    return response.json();
+    return await response.json();
 }
 
-async function createMessage(message: MessageCreate, conversationId: number): Promise<Message> {
+async function createMessage(
+    userMessage: MessageCreate,
+    conversationId: number,
+    setAiStreamMessage: (text: string) => void,
+): Promise<void> {
     const response = await fetch(`${API_URLS.CONVERSATIONS}/${conversationId}/messages/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(message),
+        body: JSON.stringify(userMessage),
     });
-    return response.json();
+
+    if (!response.body) {
+        throw new Error("No response body");
+    }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let text = "";
+
+    while (true) {
+        const { done, value } = await reader.read();
+
+        if (done) {
+            break;
+        }
+        const chunk = decoder.decode(value, { stream: true });
+        console.log("===chunk===");
+        console.log(chunk);
+        console.log("==========");
+
+        text += chunk;
+        setAiStreamMessage(text);
+    }
 }
 
 export { createMessage, getConversation, getMessages };

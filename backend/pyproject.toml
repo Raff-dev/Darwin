@@ -8,7 +8,6 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 openai = "^1.6.1"
-chromadb = "^0.4.22"
 requests = "^2.31.0"
 pinecone-client = "^2.2.4"
 tiktoken = "^0.5.2"
@@ -16,13 +15,8 @@ langchain-openai = "^0.0.2.post1"
 pypdf = "^3.17.4"
 celery = "^5.3.6"
 redis = "^5.0.1"
-alembic = "^1.13.1"
 flower = "^2.0.1"
-
-[tool.poetry.group.course.dependencies]
-pysqlite3-binary = "^0.5.2.post2"
-pyboxen = "^1.2.0"
-python-dotenv = "^1.0.0"
+gunicorn = "^21.2.0"
 
 [tool.poetry.group.web.dependencies]
 psycopg2-binary = "^2.9.9"
@@ -52,6 +46,7 @@ disable = [
     "missing-docstring",
     "missing-function-docstring",
     "too-few-public-methods",
+    "redefined-builtin",
 ]
 
 [tool.mypy]

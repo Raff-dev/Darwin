@@ -1,13 +1,14 @@
+from sqlalchemy.orm import Session
+
 from celery import shared_task
 from darwin.chat import create_embeddings
 from darwin.web.api.documents.models import Document, Status
-from darwin.web.database import get_db
-from sqlalchemy.orm import Session
+from darwin.web.database import SessionLocal
 
 
 @shared_task
 def process_document(document_id: int, filepath: str):
-    session: Session = next(get_db())
+    session: Session = SessionLocal()
 
     document = session.query(Document).filter(Document.id == document_id).first()
     if not document:

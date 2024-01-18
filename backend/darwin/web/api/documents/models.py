@@ -1,13 +1,14 @@
-from enum import Enum
 from typing import Any
 
-from darwin.web.database import Base
 from sqlalchemy import Column
 from sqlalchemy import Enum as SqlEnum
 from sqlalchemy import Integer, String
 
+from darwin.web.database import Base
+from darwin.web.utils import MembershipEnum
 
-class Status(Enum):
+
+class Status(MembershipEnum):
     PENDING = "pending"
     PROCESSING = "processing"
     PROCESSED = "processed"

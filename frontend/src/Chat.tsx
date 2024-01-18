@@ -1,16 +1,17 @@
 import { Button, Grid, MenuItem, Select, SelectChangeEvent, TextField, Typography } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
-import { Conversation, Message, MessageCreate, MessageType, createMessage, getMessages } from './api/conversations';
+import { Conversation, Message, MessageType, createMessage, getMessages } from './api/conversations';
 import { Document, DocumentStatus, createConversation, getConversations, getDocument } from './api/documents';
 
 import { useParams } from 'react-router-dom';
 
+const CURRENT_AI_MESSAGE_ID = -1;
 
 function Chat() {
     const { document_id } = useParams<{ document_id: string }>();
     const [conversations, setConversations] = useState<Conversation[]>([]);
     const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
-    const [messages, setMessages] = useState<(Message | MessageCreate)[]>([]);
+    const [messages, setMessages] = useState<(Message)[]>([]);
     const [newMessage, setNewMessage] = useState('');
     const [document, setDocument] = useState<Document | null>(null);
     const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -63,14 +64,35 @@ function Chat() {
         setNewMessage(event.target.value);
     };
 
+    const addMessage = (message: Message) => {
+        setMessages(messages => [...messages, message]);
+    };
+
+    const setAiStreamMessage = (text: string) => {
+        const aiMessage = {id: CURRENT_AI_MESSAGE_ID, text: text, type: MessageType.AI};
+        setMessages(messages => {
+            const newMessages = messages.filter(m => {
+                if (m.id === CURRENT_AI_MESSAGE_ID) {
+                    return false;
+                }
+                return true;
+            });
+            newMessages.push(aiMessage);
+            return newMessages;
+        });
+    }
+
     const handleNewMessageSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         if (selectedConversation && selectedConversation.id && newMessage.trim() !== '') {
-            const userMessage = { text: newMessage, type: MessageType.USER}
-            setMessages(messages => [...messages, userMessage]);
+            const userMessage = { id:0, text: newMessage, type: MessageType.USER}
+            addMessage(userMessage);
             setNewMessage('');
-            const aiMessage = await createMessage(userMessage, selectedConversation.id);
-            setMessages(messages => [...messages, aiMessage]);
+
+            const aiMessage = {id: CURRENT_AI_MESSAGE_ID, text: "", type: MessageType.AI};
+            addMessage(aiMessage);
+
+            await createMessage(userMessage, selectedConversation.id, setAiStreamMessage);
         }
     };
 

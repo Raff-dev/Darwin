@@ -1,56 +1,53 @@
-from darwin.chat import chat
-from darwin.web.api.conversations import models, schemas
-from darwin.web.database import get_db
+from collections.abc import AsyncGenerator
+
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
+
+from darwin.chat import chat
+from darwin.web.api.conversations import schemas
+from darwin.web.api.conversations.models import Conversation, Message
+from darwin.web.database import get_db
 
 router = APIRouter()
 
 
 @router.get("/{conversation_id}", response_model=list[schemas.Conversation])
 def get_conversation(
-    conversation_id: int, db: Session = Depends(get_db)
-) -> models.Conversation | None:
+    conversation_id: int, session: Session = Depends(get_db)
+) -> Conversation | None:
     return (
-        db.query(models.Conversation)
-        .filter(models.Conversation.id == conversation_id)
-        .first()
+        session.query(Conversation).filter(Conversation.id == conversation_id).first()
     )
 
 
 @router.get("/{conversation_id}/messages", response_model=list[schemas.Message])
 def get_messages(
-    conversation_id: int, db: Session = Depends(get_db)
-) -> list[models.Message]:
+    conversation_id: int, session: Session = Depends(get_db)
+) -> list[Message]:
     return (
-        db.query(models.Message)
-        .filter(models.Message.conversation_id == conversation_id)
-        .all()
+        session.query(Message).filter(Message.conversation_id == conversation_id).all()
     )
 
 
 @router.post("/{conversation_id}/messages", response_model=schemas.Message)
-def create_conversation_message(
-    message: schemas.MessageCreate, conversation_id: int, db: Session = Depends(get_db)
-) -> models.Message:
+async def create_conversation_message(
+    message: schemas.MessageCreate,
+    conversation_id: int,
+    session: Session = Depends(get_db),
+) -> StreamingResponse:
     conversation = (
-        db.query(models.Conversation)
-        .filter(models.Conversation.id == conversation_id)
-        .first()
+        session.query(Conversation).filter(Conversation.id == conversation_id).first()
     )
     if conversation is None:
         raise HTTPException(status_code=404, detail="Conversation not found")
 
-    db_message = models.Message(**message.model_dump(), conversation_id=conversation_id)
-    db.add(db_message)
-    db.commit()
-    db.refresh(db_message)
+    async def stream_tokens() -> AsyncGenerator[str | Message, None]:
+        for token in chat.ask_document(
+            conversation=conversation,
+            text=message.text,
+        ):
+            print(token)
+            yield token
 
-    response = chat.ask_document(conversation=conversation, message=db_message)
-    db_response = models.Message(
-        text=response, type=models.MessageType.AI, conversation_id=conversation_id
-    )
-    db.add(db_response)
-    db.commit()
-    db.refresh(db_response)
-    return db_response
+    return StreamingResponse(stream_tokens(), media_type="text/event-stream")
