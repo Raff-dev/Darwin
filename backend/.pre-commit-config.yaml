@@ -10,7 +10,6 @@ repos:
       hooks:
           - id: absolufy-imports
             verbose: true
-            args: ["--application-directories=.:adh"]
 
     - repo: https://github.com/asottile/pyupgrade
       rev: v3.15.0
